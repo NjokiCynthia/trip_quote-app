@@ -2,6 +2,7 @@ package com.example.tripquote.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +43,9 @@ fun LandingScreen(navController: NavController) {
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = { navController.navigate("quote") }) {
+            Button(
+                shape = RoundedCornerShape(10.dp),
+                onClick = { navController.navigate("quote") }) {
                 Text("Get Sample Quote")
             }
         }
