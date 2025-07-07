@@ -1,8 +1,5 @@
 package com.example.tripquote.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,135 +7,144 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.tripquote.util.Constants
+import com.example.tripquote.ui.viewmodel.QuoteViewModel
 
 @Composable
-fun QuoteDetailScreen() {
-    var visible by remember { mutableStateOf(false) }
+fun QuoteDetailScreen(viewModel: QuoteViewModel) {
+    val quote by viewModel.quote.collectAsState(initial = null)
+    val isLoading by viewModel.isLoading.collectAsState(initial = true)
 
     LaunchedEffect(Unit) {
-        visible = true
+        viewModel.getQuote()
     }
-
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.systemBars.asPaddingValues())
-            .padding(16.dp),
+            .padding(WindowInsets.systemBars.asPaddingValues()),
+           // .padding(16.dp),
         color = MaterialTheme.colorScheme.background
     ) {
-        Column {
-            Text(
-                text = "Trip Quote",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Trip Quote",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
 
-            AnimatedVisibility(visible = visible, enter = fadeIn(tween(700))) {
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            quote?.let {
                 Card(
-                    shape = RoundedCornerShape(20.dp),
-                    elevation = CardDefaults.cardElevation(6.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    //colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-
-                        // 🏝️ Banner Image
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         Image(
-                            painter = rememberAsyncImagePainter(Constants.BEACH_IMAGE_URL),
-                            contentDescription = "Beach Banner",
+                            painter = rememberAsyncImagePainter(quote!!.imageUrl),
+                            contentDescription = "Beach",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(180.dp)
-                                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                                .clip(RoundedCornerShape(12.dp))
                         )
 
-                        Column(
-                            modifier = Modifier
-                                .padding(20.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            // 🏝️ Destination
-                            Row {
-                                Text(
-                                    text = "Destination:  ",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Normal
-                                )
-                                Text(
-                                    text = "Mombasa",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-
-                            // 🗓️ Date + Travellers
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.CalendarToday,
-                                        contentDescription = "Date",
-                                        modifier = Modifier.size(18.dp),
-                                        tint = Color.Gray
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "August 15, 2024",
-                                        fontSize = 14.sp,
-                                        color = Color.Gray
-                                    )
-                                }
-
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.Groups,
-                                        contentDescription = "Travellers",
-                                        modifier = Modifier.size(18.dp),
-                                        tint = Color.Gray
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "2 Travellers",
-                                        fontSize = 14.sp,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
-
-                            // 💰 Total Cost
+                        Row {
                             Text(
-                                text = "Cost: KES 150,000",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
+                                text = "Destination: ",
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = quote!!.destination,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        // 🗓️ Date + Travellers
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.CalendarToday,
+                                    contentDescription = "Date",
+                                    modifier = Modifier.size(18.dp),
+                                    tint = Color.Gray
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = quote!!.travelDate,fontSize = 14.sp,
+                                    color = Color.Gray
+                                )
+                            }
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Groups,
+                                    contentDescription = "Travellers",
+                                    modifier = Modifier.size(18.dp),
+                                    tint = Color.Gray
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "${quote!!.travellers.toString()} travellers",
+                                    fontSize = 14.sp,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                        Row {
+                            Text(
+                                text = "Total Cost: ",
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = quote!!.totalCost,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.primary
                             )
-
-                            // 🔘 Contact Agent
-                            Button(
-                                onClick = { /* no action */ },
-                                shape = RoundedCornerShape(10.dp),
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                            ) {
-                                Text("Contact Agent", fontSize = 16.sp)
-                            }
+                        }
+                        Button(
+                            onClick = { },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        ) {
+                            Text("Contact Agent")
                         }
                     }
                 }
-            }
+            } ?: Text("Failed to load quote data.", color = Color.Red)
         }
     }
-}
+}}
