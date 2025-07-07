@@ -1,4 +1,4 @@
-# Triply Quotes App
+# Triply Quote App
 
 Triply Quotes is a simple Jetpack Compose mobile app that displays a simulated travel quote for a trip.
 
