@@ -1,10 +1,10 @@
-# 🧳 Triply Quotes App
+# Triply Quotes App
 
 Triply Quotes is a simple Jetpack Compose mobile app that displays a simulated travel quote for a trip.
 
 ---
 
-## 📱 Features
+## Features
 - Jetpack Compose UI
 - Fetches quote data from a **remote API (GitHub Gist)**
 - MVVM architecture
@@ -13,7 +13,7 @@ Triply Quotes is a simple Jetpack Compose mobile app that displays a simulated t
 
 ---
 
-## 📷 Sample Data
+## Sample Data
 Displayed travel quote includes:
 - Destination: **Mombasa**
 - Travel Date: **August 15, 2024**
@@ -23,7 +23,7 @@ Displayed travel quote includes:
 
 ---
 
-## 🌐 API Source: GitHub Gist
+## API Source: GitHub Gist
 
 This project fetches the quote data from a **public GitHub Gist** served via its **raw link**. This simulates a public API response without needing a real backend.
 
@@ -38,7 +38,7 @@ This project fetches the quote data from a **public GitHub Gist** served via its
 }
 ```
 
-### ✅ How the Gist is Integrated:
+### How Gist is Integrated:
 - The **raw Gist URL** is used as the endpoint in Retrofit.
 - `ApiService.kt` defines the GET path based on the Gist's structure:
   ```kotlin
@@ -52,7 +52,7 @@ This project fetches the quote data from a **public GitHub Gist** served via its
 
 ---
 
-## 🧱 Project Structure
+## Project Structure
 ```
 com.example.tripquote
 ├── data
@@ -69,7 +69,7 @@ com.example.tripquote
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - Kotlin
 - Jetpack Compose
 - Retrofit + Gson
@@ -78,12 +78,12 @@ com.example.tripquote
 
 ---
 
-## 🚀 Setup Instructions
+## Setup Instructions
 1. Clone the repo
 2. Replace the Gist URL in `ApiService.kt` with your own if needed
 3. Build and run the project using Android Studio (with Jetpack Compose support)
 
 ---
 
-## 📌 Notes
+## Notes
 - The app uses a **remote Gist file** instead of local assets to meet the API simulation requirement
